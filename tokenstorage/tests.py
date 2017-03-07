@@ -1,7 +1,7 @@
 from django.test import TestCase
 from tokenstorage.models import TokenStore
 from django.db.utils import IntegrityError
-from rest_framework.test import APIRequestFactory, APIClient, APITestCase
+from rest_framework.test import APIRequestFactory, APITestCase
 from .views import TokenStorage
 
 
