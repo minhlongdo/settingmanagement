@@ -9,8 +9,14 @@ class TokenStoreSerializer(serializers.Serializer):
 
     def update(self, instance, validated_data):
         instance.github_token = validated_data.get('github_token', instance.github_token)
-        return TokenStore.objects.update(validated_data)
+        instance.slack_token = validated_data.get('slack_token', instance.slack_token)
+        instance.save()
+
+        return instance
 
     def create(self, validated_data):
-        pass
+        """
+        Create and return a new `TokenStore` instance, given the validated data.
+        """
+        return TokenStore.objects.create(**validated_data)
 
