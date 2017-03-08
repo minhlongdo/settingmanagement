@@ -7,6 +7,7 @@ class TokenStore(models.Model):
     github_token = models.CharField(max_length=255, blank=True, null=False, default='')
     slack_token = models.CharField(max_length=255, blank=True, null=False, default='')
     vsts_token = models.CharField(max_length=255, blank=True, null=False, default='')
+    slack_channel = models.CharField(max_length=255, blank=True, null=False, default='')
 
     class Meta:
         ordering = ('instance_id',)

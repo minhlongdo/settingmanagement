@@ -11,6 +11,7 @@ class TokenStoreTestCase(TestCase):
         self.github_token = 'github_token'
         self.slack_token = 'slack_token'
         self.vsts_token = 'vsts_token'
+        self.slack_channel = 'slack_channel'
 
     def test_create_token_store_with_none_id_expect_integrity_exception(self):
         self.assertRaises(IntegrityError,
@@ -18,7 +19,8 @@ class TokenStoreTestCase(TestCase):
                           instance_id=None,
                           github_token=self.github_token,
                           slack_token=self.slack_token,
-                          vsts_token=self.vsts_token)
+                          vsts_token=self.vsts_token,
+                          slack_channel=self.slack_channel)
 
     def test_create_token_store_with_empty_id_expect_integrity_exception(self):
         self.assertRaises(IntegrityError,
@@ -26,13 +28,15 @@ class TokenStoreTestCase(TestCase):
                           instance_id='',
                           github_token=self.github_token,
                           slack_token=self.slack_token,
-                          vsts_token=self.vsts_token)
+                          vsts_token=self.vsts_token,
+                          slack_channel=self.slack_channel)
 
     def test_create_token_store_with_id_expect_pass(self):
         TokenStore.objects.create(instance_id=self.instance_id,
                                   github_token=self.github_token,
                                   slack_token=self.slack_token,
-                                  vsts_token=self.vsts_token)
+                                  vsts_token=self.vsts_token,
+                                  slack_channel=self.slack_channel)
 
         token_store = TokenStore.objects.get(instance_id=self.instance_id)
 
@@ -51,12 +55,15 @@ class TokenStoreViewTest(APITestCase):
             'instance_id': 'test-instance-id',
             'github_token': 'test-github-token',
             'slack_token': 'test-slack-token',
-            'vsts_token': 'test-vsts-token'
+            'vsts_token': 'test-vsts-token',
+            'slack_channel': 'test-slack-channel'
         }
         self.invalid_data = {
             'instance_id': '',
             'github_token': 'test-github-token',
-            'slack_token': 'test-slack-token'
+            'slack_token': 'test-slack-token',
+            'slack_channel': 'slack_channel',
+            'vsts_token': 'test-vsts-token'
         }
 
     def test_post_valid_data(self):
@@ -83,16 +90,22 @@ class TokenStoreViewTest(APITestCase):
         valid_data = {
             'instance_id': instance_id,
             'github_token': 'test-github-token',
-            'slack_token': 'test-slack-token'
+            'slack_token': 'test-slack-token',
+            'vsts_token': 'test-vsts-token',
+            'slack_channel': 'test-slack-channel'
         }
 
-        TokenStore.objects.create(instance_id=instance_id, github_token='github_token', slack_token='slack_token')
+        TokenStore.objects.create(instance_id=instance_id, github_token='github_token',
+                                  slack_token='slack_token', vsts_token='vsts_token',
+                                  slack_channel='slack_channel')
 
         token = TokenStore.objects.get(instance_id=instance_id)
 
         self.assertEquals(token.instance_id, instance_id)
         self.assertEquals(token.github_token, 'github_token')
         self.assertEquals(token.slack_token, 'slack_token')
+        self.assertEquals(token.vsts_token, 'vsts_token')
+        self.assertEquals(token.slack_channel, 'slack_channel')
 
         request = self.factory.put(self.base_url + instance_id, data=valid_data, format='json')
         response = self.view(request, instance_id)
@@ -109,11 +122,6 @@ class TokenStoreViewTest(APITestCase):
 
     def test_put_modify_invalid_data_instance_id(self):
         instance_id = ''
-        valid_data = {
-            'instance_id': instance_id,
-            'github_token': 'test-github-token',
-            'slack_token': 'test-slack-token'
-        }
 
         request = self.factory.put(self.base_url + '', data=self.valid_data, format='json')
         response = self.view(request, instance_id)
@@ -145,7 +153,8 @@ class TokenStoreViewTest(APITestCase):
         TokenStore.objects.create(instance_id=self.valid_data['instance_id'],
                                   github_token=self.valid_data['github_token'],
                                   slack_token=self.valid_data['slack_token'],
-                                  vsts_token=self.valid_data['vsts_token'])
+                                  vsts_token=self.valid_data['vsts_token'],
+                                  slack_channel=self.valid_data['slack_channel'])
 
         request = self.factory.get(self.base_url+"?instance_id={}".format(self.valid_data['instance_id']))
         response = self.view(request)
