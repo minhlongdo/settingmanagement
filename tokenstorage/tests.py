@@ -50,7 +50,8 @@ class TokenStoreViewTest(APITestCase):
         self.valid_data = {
             'instance_id': 'test-instance-id',
             'github_token': 'test-github-token',
-            'slack_token': 'test-slack-token'
+            'slack_token': 'test-slack-token',
+            'vsts_token': 'test-vsts-token'
         }
         self.invalid_data = {
             'instance_id': '',
@@ -131,4 +132,23 @@ class TokenStoreViewTest(APITestCase):
         response = self.view(request, instance_id)
 
         self.assertEquals(response.status_code, 202)
+        self.assertEquals(response.data, self.valid_data)
+
+    def test_get_non_existing_instance_id(self):
+
+        request = self.factory.get(self.base_url+"?instance_id={}".format(self.valid_data['instance_id']))
+        response = self.view(request)
+
+        self.assertEquals(response.status_code, 404)
+
+    def test_get_existing_instance_id(self):
+        TokenStore.objects.create(instance_id=self.valid_data['instance_id'],
+                                  github_token=self.valid_data['github_token'],
+                                  slack_token=self.valid_data['slack_token'],
+                                  vsts_token=self.valid_data['vsts_token'])
+
+        request = self.factory.get(self.base_url+"?instance_id={}".format(self.valid_data['instance_id']))
+        response = self.view(request)
+
+        self.assertEquals(response.status_code, 200)
         self.assertEquals(response.data, self.valid_data)
