@@ -5,7 +5,7 @@ from .serializers import TokenStoreSerializer
 from .responses import JSONResponse
 from django.http import Http404, HttpResponseBadRequest, HttpResponseServerError
 from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_201_CREATED, HTTP_404_NOT_FOUND,\
-    HTTP_500_INTERNAL_SERVER_ERROR
+    HTTP_500_INTERNAL_SERVER_ERROR, HTTP_202_ACCEPTED
 
 
 class TokenStorage(APIView):
@@ -45,7 +45,7 @@ class TokenStorage(APIView):
             serializer = TokenStoreSerializer(token, data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                return Response(serializer.data, status=HTTP_201_CREATED)
+                return Response(serializer.data, status=HTTP_202_ACCEPTED)
 
             return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
