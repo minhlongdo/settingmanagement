@@ -41,42 +41,88 @@ class TokenStoreViewTest(APITestCase):
     def setUp(self):
         self.factory = APIRequestFactory(enforce_csrf_checks=True)
         self.view = TokenStorage.as_view()
+        self.base_url = '/v1/tokenstorage/'
 
     def test_post_valid_data(self):
-        url = '/v1/tokenstorage/'
         valid_data = {
             'instance_id': 'test-instance-id',
             'github_token': 'test-github-token',
             'slack_token': 'test-slack-token'
         }
-        request = self.factory.post(url, data=valid_data, format='json')
+        request = self.factory.post(self.base_url, data=valid_data, format='json')
         response = self.view(request)
 
-        self.assertEquals(response.status_code, 200, "Expects status code 200")
+        self.assertEquals(response.status_code, 201, "Expects status code 201")
         self.assertEquals(response.data, valid_data, "Expects the same data")
 
     def test_post_empty_instance_id_data(self):
-        url = '/v1/tokenstorage/'
         invalid_data = {
             'instance_id': '',
             'github_token': 'test-github-token',
             'slack_token': 'test-slack-token'
         }
 
-        request = self.factory.post(url, data=invalid_data, format='json')
+        request = self.factory.post(self.base_url, data=invalid_data, format='json')
         response = self.view(request)
 
         self.assertEquals(response.status_code, 400, "Expects status code 200")
 
     def test_post_none_instance_id_data(self):
-        url = '/v1/tokenstorage/'
         invalid_data = {
             'instance_id': None,
             'github_token': 'test-github-token',
             'slack_token': 'test-slack-token'
         }
 
-        request = self.factory.post(url, data=invalid_data, format='json')
+        request = self.factory.post(self.base_url, data=invalid_data, format='json')
         response = self.view(request)
 
         self.assertEquals(response.status_code, 400, "Expects status code 200")
+
+    def test_put_modify_data_exiting_instance_id(self):
+        instance_id = "test_instance_id"
+        valid_data = {
+            'instance_id': instance_id,
+            'github_token': 'test-github-token',
+            'slack_token': 'test-slack-token'
+        }
+
+        TokenStore.objects.create(instance_id=instance_id, github_token='github_token', slack_token='slack_token')
+
+        token = TokenStore.objects.get(instance_id=instance_id)
+
+        self.assertEquals(token.instance_id, instance_id)
+        self.assertEquals(token.github_token, 'github_token')
+        self.assertEquals(token.slack_token, 'slack_token')
+
+        request = self.factory.put(self.base_url + instance_id, data=valid_data, format='json')
+        response = self.view(request, instance_id)
+
+        self.assertEquals(response.status_code, 201)
+        self.assertEquals(response.data, valid_data)
+
+    def test_put_modify_data_non_existing_instance_id(self):
+        instance_id = "test_instance_id"
+        valid_data = {
+            'instance_id': instance_id,
+            'github_token': 'test-github-token',
+            'slack_token': 'test-slack-token'
+        }
+
+        request = self.factory.put(self.base_url + instance_id, data=valid_data, format='json')
+        response = self.view(request, instance_id)
+
+        self.assertEquals(response.status_code, 404)
+
+    def test_put_modify_invalid_data_instance_id(self):
+        instance_id = ''
+        valid_data = {
+            'instance_id': instance_id,
+            'github_token': 'test-github-token',
+            'slack_token': 'test-slack-token'
+        }
+
+        request = self.factory.put(self.base_url + instance_id, data=valid_data, format='json')
+        response = self.view(request, instance_id)
+
+        self.assertEquals(response.status_code, 500)
