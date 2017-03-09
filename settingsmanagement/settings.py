@@ -23,9 +23,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.getenv('SECRET_KEY', 'd&_9zf4=+5lup#-kd*2&t-1&b#z0$yi9wfh0046_q!)&oohd)l')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', True)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'discovery-settingmanagement.azurewebsites.net',
+    '.visualstudio.com'
+]
 
 
 # Application definition
