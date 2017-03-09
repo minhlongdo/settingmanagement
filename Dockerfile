@@ -1,12 +1,21 @@
-FROM ubuntu:14.04
+FROM python:3.4
 
-ENV DJANGO_PRODUCTION=true
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        postgresql-client \
+    && rm -rf /var/lib/apt/lists/*
 
-ADD . /code
+WORKDIR /usr/src/app
+COPY requirements.txt ./
+RUN pip3 install -r requirements.txt
+COPY . .
 
-WORKDIR /code
+ENV DEBUG False
+ENV PROD True
 
-RUN pip install -r requirements.txt
-
-# 8000 = gunicorn
 EXPOSE 8000
+
+WORKDIR /usr/src/app/
+CMD ["python", "manage.py", "makemigrations"]
+CMD ["python", "manage.py", "migrate"]
+CMD ["gunicorn", "settingsmanagement.wsgi", "-b", "0.0.0.0:8000"]
