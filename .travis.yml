@@ -1,18 +1,19 @@
 sudo: required
-
 language: python
-
 services:
-  - docker
-
+- docker
+env:
+  global:
+  - secure: SssZXT0Z13MDeoQLdOqf7daAJ0yj+KuhSHAWnen35bySww651Hkxy+47y9WjOmyxJvYj4myO+NS1GnN+1X4zHYCxgmPCko1+WkhMK/xlZiBpQOemg6F/PKpp/sx5uDyvi3AAh3ORSMh9eVKF7YyCDOe2ohrG/3EWNiNdtq5cWF3dnk+2scEIngvWjegIFHRaYEQPyI0UWNLDsvBlH1WHgUFgXDwZCRwHrVqgaQnzZsIIMhm2twkwKeYiOZuR3aIcjjX2nwWU/O2RPD2RIqqaRcQy2PVnOEx00DyjeHktUh739fqThAogDTo9bflfKpSdMXckL/CwvwCsix5b28ZX9qLmYWlRMKTS6Ei7L6fw9pnkzgnsu5bXaazQG3gt3tRUDvcJXdmTtdaaiRGGMfE9F+YvIDiAS4ofH9qTDvNho9s9M4kAdeBIwlasazmydJH3u1A7YZAPpwFycC52g02W0+hV7ctyWRsyN7k37ArtGW9aGj3nXL5Yt4qdp+2G8UkwokQ+Q+hB5iicxL7KJlVdkvFLsH4jskQVQawBUjMeadvmIu+9PmB6zzG533+QnneX5Mfb5mYxYqkzhYfjSU2JJlheCcyYESiujBvx8bXllH8hE/RYn8bUhbUzm9AtWFqpIapTRNpJKb1dysEHBw8NoJfxoiKP5uha2BGXpjztwgA=
+  - secure: EhxppRy+qHl0cZLrychZPB1VXxgnx93XAHqK83pSy9+Lx4xwzLOpZOhYU0jjkbiCtdU1TWPJRry6Ha81H0w5KnJxXiM4yjQA6O+N00gKEIP8RC2m46zTp0AKZEcrs2BKVHGW+dzobDyxx9ZI5iXwpminMbhXNza0CyVEyFSgh9OTKHwwz3ARbrXVjVlxJ+UcTgeRWpeDtl/eMQLFyOp1R7ao+qsFFv+fzG6hYu1XocP30LFbRMN9T1rQJ25sP1brKRpXwhXDehkxrKrWI6S+l1z+4arIS4KbE/sDocHNZsuryvnDlwGETNyPtyLTVRrII+rT97S0qocrG33L4py2pahjglZ4yl0bvmw6oP62lyvNsGexi0mfdjC1qJfq0hpGh9xPOBD/DtrfzYx1k3wlBLuC8qvbppyQ0b0Lsxhz54jOSF4mz8kA3gHFllUMACwCnL1ZgaKwsCTQfdDHEoEHaP0rVPu4NB/YsdrcZUHLhNZ/teZ1tE6SpyjmYu6DkMk4cHINpTxaShGV9SoHmVvwmvbAm3+zz1ppyPWxuvXjw3mjRBVdgem4QIno4YcWC7Rlx125Xf54ayUfyIGu31f3Abywpp7tbbLWGqSocLFPGr9dhJOqkX2t1xjlJbYfE0vZ90WPFLIsq7orwWJkGlUPDqcgVqI8nnP5w4pw7erUqow=
+  - secure: Du/bw2daHvRlVs+RooAbdryFoZQ99VJDQ/21BUG9eiyCmDPmYfeLnNMeBpJF24idHFXNbiqacbjMGKuGiJ5wvhBh3ZxmlxeTUxL5iHW3DgcAbkyeHJ4I/3OvAbsQOZzFCLcUYTCPQ7nK32AGU1hBKtznMz8rg2riFdiTBXVN3EfnzE4LdTVVNTKtuDOvgY67cdiIuaON7Vky1nUel9Ax4FgycIyr40N8RcxXp3eaa5Tv8HDfGhYVimUT3Si+UKA5Y3wHSmf3viHCPRgkzHUCNb0KXMD1Zf+udBixUiQ0qh/e+Kd8h/ahv1sW0iahNXS9/QHkT0rrapvJo2CsflQFeLBGrDjL+Jwm1qUkapg238oiflkfe+TY0LrXaX6ukIGC3EGdWBM5SqVfVn3R18I6RA0ODwDfPK5cRfrKVDRI/Ed1cp5It+f0U7tjzBCWwkF8VCjesm6uG5c1lQuJppwetb7ZYlyOM0JWrH04JOnY++C4GoObX44FhPNz1OuLN96cREGBKTrM3rPgu8VB6kXzaU6fphbDFNT25dJa7ZjROefYb4TQ5Mxsic/7FWZS5Fz7SkskX+3bFxwbS4VxvNJ1POrS7ir87qlHBJYqYaICcT7Am51WaBQ8yVO1AnKY6iZSzzw8v+wkncaGPq/+PT9IYMJVcnRqVwHpfLM9fWeqpq4=
 python:
-  - "3.5"
-# command to install dependencies
+- '3.5'
 install:
-  - "pip install -r requirements.txt"
-
+- pip install -r requirements.txt
 script:
-  - python manage.py test
-
+- python manage.py test
 after_success:
-  - test $TRAVIS_BRANCH == "master" && docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD $DOCKER_URL & docker build -t $DOCKER_URL/settingmanage:$APP_MAJOR_VERSION.$APP_MINOR_VERSION.$TRAVIS_BUILD_NUMBER . && docker push $DOCKER_URL/settingmanage:$APP_MAJOR_VERSION.$APP_MINOR_VERSION.$TRAVIS_BUILD_NUMBER
+- test $TRAVIS_BRANCH == "master" && docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD
+  $DOCKER_URL & docker build -t $DOCKER_URL/settingmanage:$APP_MAJOR_VERSION.$APP_MINOR_VERSION.$TRAVIS_BUILD_NUMBER
+  . && docker push $DOCKER_URL/settingmanage:$APP_MAJOR_VERSION.$APP_MINOR_VERSION.$TRAVIS_BUILD_NUMBER
