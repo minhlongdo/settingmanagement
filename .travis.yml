@@ -17,6 +17,5 @@ script:
 after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
     docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" "$DOCKER_URL";
-    docker build -t discovery/settingmanage:"$APP_MAJOR_VERSION"."$APP_MINOR_VERSION"."$TRAVIS_BUILD_NUMBER" . ;
-    docker push "$DOCKER_URL"/settingmanage:"$APP_MAJOR_VERSION"."$APP_MINOR_VERSION"."$TRAVIS_BUILD_NUMBER";
+    docker build -t discovery/settingmanage:"$APP_MAJOR_VERSION"."$APP_MINOR_VERSION"."$TRAVIS_BUILD_NUMBER" . && docker push "$DOCKER_URL"/settingmanage:"$APP_MAJOR_VERSION"."$APP_MINOR_VERSION"."$TRAVIS_BUILD_NUMBER";
     if
