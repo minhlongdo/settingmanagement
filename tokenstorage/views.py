@@ -36,7 +36,7 @@ class TokenStorage(APIView):
             return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
         except Exception:
-            raise HttpResponseServerError
+            return Response(status=HTTP_500_INTERNAL_SERVER_ERROR)
 
     def put(self, request, instance_id, format=None):
         try:
