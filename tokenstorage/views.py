@@ -12,12 +12,12 @@ class TokenStorage(APIView):
     Retrieve and update TokenStore instance
     """
 
-    def get_object(self, instance_id):
+    def get_object(self, instance_id, user_email):
         try:
             if instance_id is None or len(instance_id.strip()) <= 0:
                 raise HttpResponseBadRequest
 
-            return TokenStore.objects.get(instance_id=instance_id)
+            return TokenStore.objects.get(instance_id=instance_id, user_email=user_email)
 
         except TokenStore.DoesNotExist:
             raise Http404
@@ -40,7 +40,8 @@ class TokenStorage(APIView):
 
     def put(self, request, instance_id, format=None):
         try:
-            token = self.get_object(instance_id=instance_id)
+            user_email = request.data['user_email']
+            token = self.get_object(instance_id=instance_id, user_email=user_email)
             serializer = TokenStoreSerializer(token, data=request.data)
             if serializer.is_valid():
                 serializer.save()
@@ -51,14 +52,15 @@ class TokenStorage(APIView):
         except Http404:
             return Response(status=HTTP_404_NOT_FOUND)
 
-        except Exception:
-            return Response(status=HTTP_500_INTERNAL_SERVER_ERROR)
+        except Exception as e:
+            return Response(e, status=HTTP_500_INTERNAL_SERVER_ERROR)
 
     def get(self, request):
         """Returns github and slack tokens"""
         instance_id = request.GET.get('instance_id')
+        user_email = request.GET.get('user_email')
 
-        token = self.get_object(instance_id=instance_id)
+        token = self.get_object(instance_id=instance_id, user_email=user_email)
         serializer = TokenStoreSerializer(token)
 
         return Response(data=serializer.data, status=HTTP_200_OK)

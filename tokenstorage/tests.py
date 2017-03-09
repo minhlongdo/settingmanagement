@@ -12,6 +12,10 @@ class TokenStoreTestCase(TestCase):
         self.slack_token = 'slack_token'
         self.vsts_token = 'vsts_token'
         self.slack_channel = 'slack_channel'
+        self.user_email = 'user@email.com'
+
+    def tearDown(self):
+        TokenStore.objects.all().delete()
 
     def test_create_token_store_with_none_id_expect_integrity_exception(self):
         self.assertRaises(IntegrityError,
@@ -20,7 +24,8 @@ class TokenStoreTestCase(TestCase):
                           github_token=self.github_token,
                           slack_token=self.slack_token,
                           vsts_token=self.vsts_token,
-                          slack_channel=self.slack_channel)
+                          slack_channel=self.slack_channel,
+                          user_email=self.user_email)
 
     def test_create_token_store_with_empty_id_expect_integrity_exception(self):
         self.assertRaises(IntegrityError,
@@ -29,14 +34,16 @@ class TokenStoreTestCase(TestCase):
                           github_token=self.github_token,
                           slack_token=self.slack_token,
                           vsts_token=self.vsts_token,
-                          slack_channel=self.slack_channel)
+                          slack_channel=self.slack_channel,
+                          user_email=self.user_email)
 
     def test_create_token_store_with_id_expect_pass(self):
         TokenStore.objects.create(instance_id=self.instance_id,
                                   github_token=self.github_token,
                                   slack_token=self.slack_token,
                                   vsts_token=self.vsts_token,
-                                  slack_channel=self.slack_channel)
+                                  slack_channel=self.slack_channel,
+                                  user_email=self.user_email)
 
         token_store = TokenStore.objects.get(instance_id=self.instance_id)
 
@@ -44,6 +51,7 @@ class TokenStoreTestCase(TestCase):
         self.assertEquals(token_store.github_token, self.github_token)
         self.assertEquals(token_store.slack_token, self.slack_token)
         self.assertEquals(token_store.vsts_token, self.vsts_token)
+        self.assertEquals(token_store.user_email, self.user_email)
 
 
 class TokenStoreViewTest(APITestCase):
@@ -56,14 +64,16 @@ class TokenStoreViewTest(APITestCase):
             'github_token': 'test-github-token',
             'slack_token': 'test-slack-token',
             'vsts_token': 'test-vsts-token',
-            'slack_channel': 'test-slack-channel'
+            'slack_channel': 'test-slack-channel',
+            'user_email': 'user@email.com'
         }
         self.invalid_data = {
             'instance_id': '',
             'github_token': 'test-github-token',
             'slack_token': 'test-slack-token',
             'slack_channel': 'slack_channel',
-            'vsts_token': 'test-vsts-token'
+            'vsts_token': 'test-vsts-token',
+            'user_email': 'user@email.com'
         }
 
     def test_post_valid_data(self):
@@ -92,12 +102,13 @@ class TokenStoreViewTest(APITestCase):
             'github_token': 'test-github-token',
             'slack_token': 'test-slack-token',
             'vsts_token': 'test-vsts-token',
-            'slack_channel': 'test-slack-channel'
+            'slack_channel': 'test-slack-channel',
+            'user_email': 'user@email.com'
         }
 
         TokenStore.objects.create(instance_id=instance_id, github_token='github_token',
                                   slack_token='slack_token', vsts_token='vsts_token',
-                                  slack_channel='slack_channel')
+                                  slack_channel='slack_channel', user_email='user@email.com')
 
         token = TokenStore.objects.get(instance_id=instance_id)
 
@@ -106,9 +117,12 @@ class TokenStoreViewTest(APITestCase):
         self.assertEquals(token.slack_token, 'slack_token')
         self.assertEquals(token.vsts_token, 'vsts_token')
         self.assertEquals(token.slack_channel, 'slack_channel')
+        self.assertEquals(token.user_email, 'user@email.com')
 
         request = self.factory.put(self.base_url + instance_id, data=valid_data, format='json')
         response = self.view(request, instance_id)
+
+        print(response.data)
 
         self.assertEquals(response.status_code, 202)
         self.assertEquals(response.data, valid_data)
@@ -134,17 +148,22 @@ class TokenStoreViewTest(APITestCase):
         TokenStore.objects.create(instance_id=instance_id,
                                   github_token='hello-github',
                                   slack_token='hello-slack',
-                                  vsts_token='hello-vsts')
+                                  vsts_token='hello-vsts',
+                                  user_email='user@email.com')
 
         request = self.factory.put(self.base_url + instance_id, data=self.valid_data, format='json')
         response = self.view(request, instance_id)
+
+        print(response.data)
 
         self.assertEquals(response.status_code, 202)
         self.assertEquals(response.data, self.valid_data)
 
     def test_get_non_existing_instance_id(self):
 
-        request = self.factory.get(self.base_url+"?instance_id={}".format(self.valid_data['instance_id']))
+        request = self.factory.get(
+            self.base_url+"?instance_id={}&user_email={}".format(self.valid_data['instance_id'],
+                                                                 self.valid_data['user_email']))
         response = self.view(request)
 
         self.assertEquals(response.status_code, 404)
@@ -154,9 +173,12 @@ class TokenStoreViewTest(APITestCase):
                                   github_token=self.valid_data['github_token'],
                                   slack_token=self.valid_data['slack_token'],
                                   vsts_token=self.valid_data['vsts_token'],
-                                  slack_channel=self.valid_data['slack_channel'])
+                                  slack_channel=self.valid_data['slack_channel'],
+                                  user_email=self.valid_data['user_email'])
 
-        request = self.factory.get(self.base_url+"?instance_id={}".format(self.valid_data['instance_id']))
+        request = self.factory.get(
+            self.base_url+"?instance_id={}&user_email={}".format(self.valid_data['instance_id'],
+                                                                 self.valid_data['user_email']))
         response = self.view(request)
 
         self.assertEquals(response.status_code, 200)
