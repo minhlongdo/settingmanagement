@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import TokenStore
 from .serializers import TokenStoreSerializer
-from django.http import Http404, HttpResponseBadRequest, HttpResponseServerError
+from django.http import Http404, HttpResponseBadRequest
 from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_201_CREATED, HTTP_404_NOT_FOUND,\
     HTTP_500_INTERNAL_SERVER_ERROR, HTTP_202_ACCEPTED, HTTP_200_OK
 
