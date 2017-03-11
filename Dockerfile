@@ -19,4 +19,4 @@ EXPOSE 8000
 
 WORKDIR /usr/src/app/
 
-ENTRYPOINT["docker-entrypoint.sh"]
+ENTRYPOINT ["docker-entrypoint.sh"]
