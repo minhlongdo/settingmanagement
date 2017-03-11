@@ -19,4 +19,4 @@ EXPOSE 8000
 
 WORKDIR /usr/src/app/
 
-CMD["gunicorn", "settingsmanagement.wsgi", "-b", "0.0.0.0:8000"]
+CMD ["gunicorn", "settingsmanagement.wsgi", "-b", "0.0.0.0:8000"]
