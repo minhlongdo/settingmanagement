@@ -18,6 +18,5 @@ ENV PROD True
 EXPOSE 8000
 
 WORKDIR /usr/src/app/
-CMD ["python", "manage.py", "makemigrations"]
-CMD ["python", "manage.py", "migrate"]
-CMD ["gunicorn", "settingsmanagement.wsgi", "-b", "0.0.0.0:8000"]
+
+ENTRYPOINT["docker-entrypoint.sh"]
