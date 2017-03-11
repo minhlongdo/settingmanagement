@@ -19,4 +19,4 @@ EXPOSE 8000
 
 WORKDIR /usr/src/app/
 
-ENTRYPOINT ["docker-entrypoint.sh"]
+CMD["gunicorn", "settingsmanagement.wsgi", "-b", "0.0.0.0:8000"]
