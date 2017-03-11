@@ -5,7 +5,7 @@ from .serializers import TokenStoreSerializer
 from rest_framework import viewsets
 from django.http import Http404, HttpResponseBadRequest
 from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_201_CREATED, HTTP_404_NOT_FOUND,\
-    HTTP_500_INTERNAL_SERVER_ERROR, HTTP_202_ACCEPTED, HTTP_200_OK
+    HTTP_500_INTERNAL_SERVER_ERROR, HTTP_202_ACCEPTED, HTTP_200_OK, HTTP_204_NO_CONTENT
 
 import logging
 
@@ -92,3 +92,12 @@ class TokenStorage(APIView):
         logging.info('Retrieved data={}'.format(serializer.data))
 
         return Response(data=serializer.data, status=HTTP_200_OK)
+
+    def delete(self, request):
+        instance_id = request.data['instance_id']
+        user_email = request.data['user_email']
+        logging.info('Delete instance_id={} with user_email={}'.format(instance_id, user_email))
+        token = self.get_object(instance_id=instance_id, user_email=user_email)
+        token.delete()
+
+        return Response(status=HTTP_204_NO_CONTENT)
