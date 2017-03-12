@@ -82,7 +82,7 @@ WSGI_APPLICATION = 'settingsmanagement.wsgi.application'
 if not PROD:
     SECURE_SSL_REDIRECT = False
     SESSION_COOKIE_SECURE = False
-    CSFR_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -92,7 +92,7 @@ if not PROD:
 else:
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
-    CSFR_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
