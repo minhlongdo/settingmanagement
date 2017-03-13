@@ -95,69 +95,26 @@ class TokenStoreViewTest(APITestCase):
 
         self.assertEquals(response.status_code, 400, "Expects status code 200")
 
-    def test_put_modify_data_exiting_instance_id(self):
-        instance_id = "test_instance_id"
-        valid_data = {
-            'instance_id': instance_id,
-            'github_token': 'test-github-token',
-            'slack_token': 'test-slack-token',
-            'vsts_token': 'test-vsts-token',
-            'slack_channel': 'test-slack-channel',
-            'user_email': 'user@email.com'
+    def test_post_modify_data(self):
+        TokenStore.objects.create(instance_id=self.valid_data['instance_id'],
+                                  user_email=self.valid_data['user_email'],
+                                  github_token=self.valid_data['github_token'],
+                                  slack_token=self.valid_data['slack_token'],
+                                  slack_channel=self.valid_data['slack_channel'],
+                                  vsts_token=self.valid_data['vsts_token'])
+        modified_data = {
+            "instance_id": self.valid_data['instance_id'],
+            "user_email": self.valid_data['user_email'],
+            "github_token": "modified_github_token",
+            "slack_token": "modified_slack_token",
+            "vsts_token": "modified_slack_token",
+            "slack_channel": "modified_slack_channel"
         }
+        request = self.factory.post(self.base_url, data=modified_data)
+        response = self.view(request)
 
-        TokenStore.objects.create(instance_id=instance_id, github_token='github_token',
-                                  slack_token='slack_token', vsts_token='vsts_token',
-                                  slack_channel='slack_channel', user_email='user@email.com')
-
-        token = TokenStore.objects.get(instance_id=instance_id)
-
-        self.assertEquals(token.instance_id, instance_id)
-        self.assertEquals(token.github_token, 'github_token')
-        self.assertEquals(token.slack_token, 'slack_token')
-        self.assertEquals(token.vsts_token, 'vsts_token')
-        self.assertEquals(token.slack_channel, 'slack_channel')
-        self.assertEquals(token.user_email, 'user@email.com')
-
-        request = self.factory.put(self.base_url + instance_id, data=valid_data, format='json')
-        response = self.view(request, instance_id)
-
-        print(response.data)
-
-        self.assertEquals(response.status_code, 202)
-        self.assertEquals(response.data, valid_data)
-
-    def test_put_modify_data_non_existing_instance_id(self):
-        request = self.factory.put(self.base_url + self.valid_data['instance_id'],
-                                   data=self.valid_data, format='json')
-        response = self.view(request, self.valid_data['instance_id'])
-
-        self.assertEquals(response.status_code, 404)
-
-    def test_put_modify_invalid_data_instance_id(self):
-        instance_id = ''
-
-        request = self.factory.put(self.base_url + '', data=self.valid_data, format='json')
-        response = self.view(request, instance_id)
-
-        self.assertEquals(response.status_code, 500)
-
-    def test_put_modify_valid_data_different_instance_id_endpoint(self):
-        instance_id = "exiting_instance_id"
-
-        TokenStore.objects.create(instance_id=instance_id,
-                                  github_token='hello-github',
-                                  slack_token='hello-slack',
-                                  vsts_token='hello-vsts',
-                                  user_email='user@email.com')
-
-        request = self.factory.put(self.base_url + instance_id, data=self.valid_data, format='json')
-        response = self.view(request, instance_id)
-
-        print(response.data)
-
-        self.assertEquals(response.status_code, 202)
-        self.assertEquals(response.data, self.valid_data)
+        self.assertEquals(response.data, modified_data)
+        self.assertEquals(response.status_code, 202, "Expects status code 202")
 
     def test_get_non_existing_instance_id(self):
 
