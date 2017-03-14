@@ -29,7 +29,8 @@ DEBUG = eval(os.getenv('DEBUG', 'True'))
 ALLOWED_HOSTS = [
     'discovery-settingmanagement.azurewebsites.net',
     'visualstudio.com',
-    '127.0.0.1'
+    '127.0.0.1',
+    'yichen-lu.gallery.vsassets.io'
 ]
 
 
