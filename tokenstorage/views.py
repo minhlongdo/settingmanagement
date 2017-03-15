@@ -3,7 +3,8 @@ from rest_framework.response import Response
 from .models import TokenStore
 from .serializers import TokenStoreSerializer
 from rest_framework import viewsets
-from django.http import Http404, HttpResponseBadRequest
+from rest_framework.decorators import api_view
+from django.http import Http404
 from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_201_CREATED, HTTP_404_NOT_FOUND,\
     HTTP_500_INTERNAL_SERVER_ERROR, HTTP_202_ACCEPTED, HTTP_200_OK, HTTP_204_NO_CONTENT
 from .exceptions import Http400
@@ -110,3 +111,10 @@ class TokenStorage(APIView):
         token.delete()
 
         return Response(status=HTTP_204_NO_CONTENT)
+
+
+@api_view(['DELETE'])
+def clear_database(request):
+    TokenStore.objects.all().delete()
+
+    return Response(data='Clear database', status=HTTP_200_OK)
