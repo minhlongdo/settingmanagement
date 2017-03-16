@@ -5,6 +5,8 @@ from django.db.utils import IntegrityError
 class TokenStore(models.Model):
     instance_id = models.CharField(max_length=255, blank=False, auto_created=False)
     user_email = models.EmailField(primary_key=True, blank=False, auto_created=False, default='invalid@email.com')
+    github_user = models.CharField(max_length=255, blank=True, auto_created=False, default='', null=False)
+    github_org = models.CharField(max_length=255, blank=True, auto_created=False, default='', null=False)
     github_token = models.CharField(max_length=255, blank=True, null=False, default='')
     slack_token = models.CharField(max_length=255, blank=True, null=False, default='')
     vsts_token = models.CharField(max_length=255, blank=True, null=False, default='')

@@ -13,7 +13,15 @@ install:
 - pip install -r requirements.txt
 script:
 - python manage.py test
-after_success:
-- python manage.py makemigrations
-- python manage.py migrate
-- test $TRAVIS_BRANCH == "master" && docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD $DOCKER_URL & docker build -t $DOCKER_URL/settingmanage:$APP_MAJOR_VERSION.$APP_MINOR_VERSION.$TRAVIS_BUILD_NUMBER . && docker push $DOCKER_URL/settingmanage:$APP_MAJOR_VERSION.$APP_MINOR_VERSION.$TRAVIS_BUILD_NUMBER
+
+deploy:
+  provider: script
+  script:
+    - PROD=True
+    - python manage.py makemigrations
+    - python manage.py migrate
+    - docker login -u=$DOCKER_USERNAME -p=$DOCKER_PASSWORD $DOCKER_URL
+    - docker build -t $DOCKER_URL/settingmanage:$APP_MAJOR_VERSION.$APP_MINOR_VERSION.$TRAVIS_BUILD_NUMBER .
+    - docker push $DOCKER_URL/settingmanage:$APP_MAJOR_VERSION.$APP_MINOR_VERSION.$TRAVIS_BUILD_NUMBER
+  on:
+    branch: master
