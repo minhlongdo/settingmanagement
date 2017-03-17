@@ -11,6 +11,7 @@ class TokenStore(models.Model):
     slack_token = models.CharField(max_length=255, blank=True, null=False, default='')
     vsts_token = models.CharField(max_length=255, blank=True, null=False, default='')
     slack_channel = models.CharField(max_length=255, blank=True, null=False, default='')
+    codeclimate_token = models.CharField(max_length=255, blank=True, null=False, default='')
 
     class Meta:
         ordering = ('instance_id', 'user_email')

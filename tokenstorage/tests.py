@@ -67,7 +67,8 @@ class TokenStoreViewTest(APITestCase):
             'slack_channel': 'test-slack-channel',
             'user_email': 'user@email.com',
             'github_user': 'github-user',
-            'github_org': 'github_org'
+            'github_org': 'github_org',
+            'codeclimate_token': 'codeclimate_token'
         }
         self.invalid_data = {
             'instance_id': '',
@@ -105,7 +106,8 @@ class TokenStoreViewTest(APITestCase):
                                   slack_channel=self.valid_data['slack_channel'],
                                   vsts_token=self.valid_data['vsts_token'],
                                   github_user=self.valid_data['github_user'],
-                                  github_org=self.valid_data['github_org'])
+                                  github_org=self.valid_data['github_org'],
+                                  codeclimate_token=self.valid_data['codeclimate_token'])
         modified_data = {
             "instance_id": self.valid_data['instance_id'],
             "user_email": self.valid_data['user_email'],
@@ -114,7 +116,8 @@ class TokenStoreViewTest(APITestCase):
             "vsts_token": "modified_slack_token",
             "slack_channel": "modified_slack_channel",
             "github_org": "modified_github_org",
-            "github_user": "modified_github_user"
+            "github_user": "modified_github_user",
+            "codeclimate_token": "modified_codeclimate_token"
         }
         request = self.factory.post(self.base_url, data=modified_data)
         response = self.view(request)
@@ -139,7 +142,8 @@ class TokenStoreViewTest(APITestCase):
                                   slack_channel=self.valid_data['slack_channel'],
                                   user_email=self.valid_data['user_email'],
                                   github_user=self.valid_data['github_user'],
-                                  github_org=self.valid_data['github_org'])
+                                  github_org=self.valid_data['github_org'],
+                                  codeclimate_token=self.valid_data['codeclimate_token'])
 
         request = self.factory.get(
             self.base_url+"?instance_id={}&user_email={}".format(self.valid_data['instance_id'],
