@@ -23,7 +23,7 @@ class TokenStorageViewSet(viewsets.ViewSet):
 
 class TokenStorage(APIView):
     """
-    Retrieve and update TokenStore instance
+    Retrieve and update TokenStore instance based on the query parameters instance_id and user_email.
     """
 
     def get_object(self, instance_id, user_email):
@@ -49,6 +49,9 @@ class TokenStorage(APIView):
             raise Exception
 
     def post(self, request):
+        """
+        Create or modify current entry of the token of a user.
+        """
         try:
             logging.info('Incoming data={}'.format(request.data))
             token = self.get_object(request.data['instance_id'], request.data['user_email'])
@@ -82,7 +85,9 @@ class TokenStorage(APIView):
             return Response(status=HTTP_500_INTERNAL_SERVER_ERROR)
 
     def get(self, request):
-        """Returns github and slack tokens"""
+        """
+        Returns all the token of the user based on the query parameters instance_id and user_email.
+        """
         instance_id = request.GET.get('instance_id')
         user_email = request.GET.get('user_email')
 
@@ -104,6 +109,9 @@ class TokenStorage(APIView):
             return Response(data=e, status=HTTP_500_INTERNAL_SERVER_ERROR)
 
     def delete(self, request):
+        """
+        Delete token entry based on instance_id and user_email in the request's body.
+        """
         instance_id = request.data['instance_id']
         user_email = request.data['user_email']
         logging.info('Delete instance_id={} with user_email={}'.format(instance_id, user_email))

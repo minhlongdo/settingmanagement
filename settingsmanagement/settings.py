@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'tokenstorage',
     'corsheaders',
+    'rest_framework_docs',
 ]
 
 MIDDLEWARE = [
@@ -140,3 +141,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+
+REST_FRAMEWORK_DOCS = {
+    'HIDE_DOCS': PROD  # Default: False
+}
